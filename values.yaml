@@ -1,0 +1,62 @@
+## DEFAULTS VALUES FOR SVC
+service:
+  type: ClusterIP
+  ports:
+    https:
+      port: 3002
+      targetPort: 3002
+      protocol: TCP
+
+## DEFAULTS VALUES FOR DEPLOYMENTS
+container:
+  ports:
+    https:
+      containerPort: 3002
+      protocol: TCP
+
+replicaCount: 3
+updateStrategy:
+  type: RollingUpdate
+image:
+  ##This value always rewrite in the deployment
+  repository: api-restful-docker
+  tag: v1.0.0
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 1024Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+livenessProbe:
+  tcpSocket:
+    port: 3002
+  initialDelaySeconds: 180
+  periodSeconds: 180
+  # periodSeconds: 30
+  # timeoutSeconds: 30
+  # failureThreshold: 6
+  # successThreshold: 1
+
+readinessProbe:
+  tcpSocket:
+    port: 3002
+  initialDelaySeconds: 30
+  periodSeconds: 30
+  # periodSeconds: 30
+  # timeoutSeconds: 30
+  # failureThreshold: 6
+  # successThreshold: 1
+
+nodeSelector: {}
+
+tolerations: []
+
+podAnnotations:
+  iam.amazonaws.com/role: "api-restfull-role"
+  prometheus.io/scrape: "true"
+  prometheus.io/path: "/metrics"
+  
